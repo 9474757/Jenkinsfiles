@@ -10,20 +10,23 @@ node {
    
    echo sh(script: 'env|sort', returnStdout: true)
    
-   SERVICE_NAME = "config-server"
+   SERVICE_NAME="config-server"
    echo "SERVICE_NAME = $SERVICE_NAME"
-   PATH_REPO = '/opt/BWRK'
+   PATH_REPO='/opt/BWRK'
    echo "PATH_REPO = $PATH_REPO"
-   mvnHome = '/opt/apache-maven-3.6.1'
+   mvnHome='/opt/apache-maven-3.6.1'
    echo "mvnHome = $mvnHome"
    
+   echo "CHECK OUT REPO $SERVICE_NAME"
    git "ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git"
-   
+
+   sh "mvn -Dmaven.test.failure.ignore clean"
+
    stage('Build') {
       // Run the maven build
       withEnv(["MVN_HOME=$mvnHome"]) {
          if (isUnix()) {
-            sh '"$MVN_HOME/bin/mvn" -Dmaven.test.failure.ignore clean package'
+            sh "cd $PATH_REPO/$SERVICE_NAME && $MVN_HOME/bin/mvn -Dmaven.test.failure.ignore clean package"
          } else {
             bat(/"%MVN_HOME%\bin\mvn" -Dmaven.test.failure.ignore clean package/)
          }
