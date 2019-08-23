@@ -19,7 +19,7 @@ pipeline {
         
     }
 
-    
+    sh 'git fetch ssh://git@bitbucket.org/blockwrk/config-server.git'
 
     stages {
 
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 // using the Pipeline Maven plugin we can set maven configuration settings, publish test results, and annotate the Jenkins console
                 withMaven(options: [findbugsPublisher(), junitPublisher(ignoreAttachments: false)]) {
-                    sh 'git fetch ssh://git@bitbucket.org/blockwrk/config-server.git'
+                    
                     sh 'mvn clean findbugs:findbugs package'
                 }
             }
