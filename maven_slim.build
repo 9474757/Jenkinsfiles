@@ -1,0 +1,13 @@
+SERVICE_NAME=$(pwd | grep -o '[^/]*$')
+PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
+rm -R target
+mvn -Dmaven.test.failure.ignore clean package
+
+cat <<EOF > Dockerfile_slim_image
+FROM openjdk:8-jdk-alpine
+EXPOSE $PORT_SERVICE
+COPY target/config-server-*-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+EOF
+
+docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:8-jdk-alpine_3 -t $SERVICE_NAME:latest .
