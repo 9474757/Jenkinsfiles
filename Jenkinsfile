@@ -11,11 +11,11 @@ node {
    echo sh(script: 'env|sort', returnStdout: true)
    
    SERVICE_NAME = 'api-gateway'
+   echo "SERVICE_NAME = $SERVICE_NAME"
    PATH_REPO = '/opt/BWRK'
+   echo "PATH_REPO = $PATH_REPO"
    mvnHome = '/opt/apache-maven-3.6.1'
-   echo "$SERVICE_NAME"
-   echo "$PATH_REPO"
-   echo "$PATH_REPO"
+   echo "mvnHome = $mvnHome"
    
    stage('Build') {
       // Run the maven build
