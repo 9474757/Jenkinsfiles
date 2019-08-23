@@ -10,7 +10,7 @@ node {
    
    echo sh(script: 'env|sort', returnStdout: true)
    
-   SERVICE_NAME = 'api-gateway'
+   SERVICE_NAME = 'config-server'
    echo "SERVICE_NAME = $SERVICE_NAME"
    PATH_REPO = '/opt/BWRK'
    echo "PATH_REPO = $PATH_REPO"
