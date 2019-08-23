@@ -17,7 +17,7 @@ node {
    mvnHome = '/opt/apache-maven-3.6.1'
    echo "mvnHome = $mvnHome"
    
-   git 'ssh://git@bitbucket.org/blockwrk/api-gateway.git'
+   git 'ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git'
    
    stage('Build') {
       // Run the maven build
