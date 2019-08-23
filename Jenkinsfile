@@ -12,7 +12,7 @@ node {
    
    SERVICE_NAME = 'api-gateway'
    PATH_REPO = '/opt/BWRK'
-   PATH_REPO = '/opt/apache-maven-3.6.1'
+   mvnHome = '/opt/apache-maven-3.6.1'
    echo "$SERVICE_NAME"
    echo "$PATH_REPO"
    echo "$PATH_REPO"
