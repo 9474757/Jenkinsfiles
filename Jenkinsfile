@@ -1,45 +1,84 @@
 #!/usr/bin/env groovy
-// Some fast steps to inspect the build server. Create a pipeline script job and add this:
+pipeline {
 
-node {
-   DOCKER_PATH = sh (script: 'command -v docker', returnStdout: true).trim()
-   echo "Docker path: ${DOCKER_PATH}"
-   
-   FREE_MEM = sh (script: 'free -m', returnStdout: true).trim()
-   echo "Free memory: ${FREE_MEM}"
-   
-   echo sh(script: 'env|sort', returnStdout: true)
-   
-   SERVICE_NAME = "config-server"
-   echo "SERVICE_NAME = $SERVICE_NAME"
-   PATH_REPO = '/opt/BWRK'
-   echo "PATH_REPO = $PATH_REPO"
-   mvnHome = '/opt/apache-maven-3.6.1'
-   echo "mvnHome = $mvnHome"
-   
-   echo "CHECK OUT REPO $SERVICE_NAME"
-   git "ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git"
-   
+    /*
+     * Run everything on an existing agent configured with a label 'docker'.
+     * This agent will need docker, git and a jdk installed at a minimum.
+     */
+    agent any
+
+    // using the Timestamper plugin we can add timestamps to the console log
+    options {
+        timestamps()
+    }
+
+    environment {
+        //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables
+        IMAGE = readMavenPom().getArtifactId()
+        VERSION = readMavenPom().getVersion()
+        
+    }
+
+   stage('Preparation') { // for display purposes
+      git 'ssh://git@bitbucket.org/blockwrk/api-gateway.git'
+      // Get the Maven tool.
+      // ** NOTE: This 'M3' Maven tool must be configured
+      // **       in the global configuration.           
+
+   }
+
+    stages {
+        stage('Build') {
+            agent {
+                docker {
+                    /*
+                     * Reuse the workspace on the agent defined at top-level of Pipeline but run inside a container.
+                     * In this case we are running a container with maven so we don't have to install specific versions
+                     * of maven directly on the agent
+                     */
+                    reuseNode true
+                    image 'maven:3.5.0-jdk-8'
+                }
+            }
             steps {
-                script {
-                    sshagent(['ci-ssh']) {
-                        sh """
+                // using the Pipeline Maven plugin we can set maven configuration settings, publish test results, and annotate the Jenkins console
+                withMaven(options: [findbugsPublisher(), junitPublisher(ignoreAttachments: false)]) {
+                    sh 'mvn clean findbugs:findbugs package'
+                }
+            }
+            post {
+                success {
+                    // we only worry about archiving the jar file if the build steps are successful
+                    archiveArtifacts(artifacts: '**/target/*.jar', allowEmptyArchive: true)
+                }
+            }
+        }
 
-PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
-rm -R target
-mvn -Dmaven.test.failure.ignore clean package
 
-cat <<EOF > Dockerfile_slim_image
-FROM openjdk:8-jdk-alpine
-EXPOSE $PORT_SERVICE
-COPY target/config-server-*-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
-EOF
+        stage('Build and Publish Image') {
+            when {
+                branch 'master'  //only run these steps on the master branch
+            }
+            steps {
+                /*
+                 * Multiline strings can be used for larger scripts. It is also possible to put scripts in your shared library
+                 * and load them with 'libaryResource'
+                 */
+                sh """
+          docker build -t ${IMAGE} .
+          docker tag ${IMAGE} ${IMAGE}:${VERSION}
+          docker push ${IMAGE}:${VERSION}
+        """
+            }
+        }
+    }
 
-docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:8-jdk-alpine_3 -t $SERVICE_NAME:latest .
-
-                        """
-                    }
-                }}
-   
+    post {
+        failure {
+            // notify users when the Pipeline fails
+            mail to: 'anton.mykhailenko@rozdoum.com',
+                    subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+                    body: "Something is wrong with ${env.BUILD_URL}"
+        }
+    }
 }
