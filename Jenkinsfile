@@ -19,6 +19,8 @@ pipeline {
         
     }
 
+    stages {
+
    stage('Preparation') { // for display purposes
       git 'ssh://git@bitbucket.org/blockwrk/api-gateway.git'
       // Get the Maven tool.
@@ -26,8 +28,6 @@ pipeline {
       // **       in the global configuration.           
 
    }
-
-    stages {
         stage('Build') {
             agent {
                 docker {
