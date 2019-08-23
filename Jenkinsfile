@@ -9,5 +9,11 @@ node {
    echo "Free memory: ${FREE_MEM}"
    
    echo sh(script: 'env|sort', returnStdout: true)
-
+   
+   SERVICE_NAME = 'api-gateway'
+   PATH_REPO = '/opt/BWRK'
+   PATH_REPO = '/opt/apache-maven-3.6.1'
+   echo "$SERVICE_NAME"
+   echo "$PATH_REPO"
+   echo "$PATH_REPO"
 }
