@@ -19,15 +19,10 @@ pipeline {
         
     }
 
+    git 'ssh://git@bitbucket.org/blockwrk/api-gateway.git'
+
     stages {
 
-   stage('Preparation') { // for display purposes
-      git 'ssh://git@bitbucket.org/blockwrk/api-gateway.git'
-      // Get the Maven tool.
-      // ** NOTE: This 'M3' Maven tool must be configured
-      // **       in the global configuration.           
-
-   }
         stage('Build') {
             agent {
                 docker {
