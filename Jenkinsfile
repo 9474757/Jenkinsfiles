@@ -19,7 +19,7 @@ pipeline {
         
     }
 
-    git 'ssh://git@bitbucket.org/blockwrk/api-gateway.git'
+    
 
     stages {
 
@@ -35,9 +35,11 @@ pipeline {
                     image 'maven:3.5.0-jdk-8'
                 }
             }
+            
             steps {
                 // using the Pipeline Maven plugin we can set maven configuration settings, publish test results, and annotate the Jenkins console
                 withMaven(options: [findbugsPublisher(), junitPublisher(ignoreAttachments: false)]) {
+                    git 'ssh://git@bitbucket.org/blockwrk/api-gateway.git'
                     sh 'mvn clean findbugs:findbugs package'
                 }
             }
