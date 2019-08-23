@@ -39,7 +39,7 @@ pipeline {
             steps {
                 // using the Pipeline Maven plugin we can set maven configuration settings, publish test results, and annotate the Jenkins console
                 withMaven(options: [findbugsPublisher(), junitPublisher(ignoreAttachments: false)]) {
-                    sh 'git "ssh://git@bitbucket.org/blockwrk/api-gateway.git"'
+                    sh 'git fetch ssh://git@bitbucket.org/blockwrk/config-server.git'
                     sh 'mvn clean findbugs:findbugs package'
                 }
             }
