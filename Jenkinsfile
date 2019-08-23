@@ -17,6 +17,8 @@ node {
    mvnHome = '/opt/apache-maven-3.6.1'
    echo "mvnHome = $mvnHome"
    
+   git 'ssh://git@bitbucket.org/blockwrk/api-gateway.git'
+   
    stage('Build') {
       // Run the maven build
       withEnv(["MVN_HOME=$mvnHome"]) {
