@@ -10,26 +10,36 @@ node {
    
    echo sh(script: 'env|sort', returnStdout: true)
    
-   SERVICE_NAME="config-server"
+   SERVICE_NAME = "config-server"
    echo "SERVICE_NAME = $SERVICE_NAME"
-   PATH_REPO='/opt/BWRK'
+   PATH_REPO = '/opt/BWRK'
    echo "PATH_REPO = $PATH_REPO"
-   mvnHome='/opt/apache-maven-3.6.1'
+   mvnHome = '/opt/apache-maven-3.6.1'
    echo "mvnHome = $mvnHome"
    
    echo "CHECK OUT REPO $SERVICE_NAME"
    git "ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git"
+   
+            steps {
+                script {
+                    sshagent(['ci-ssh']) {
+                        sh """
 
-   sh "mvn -Dmaven.test.failure.ignore clean"
+PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
+rm -R target
+mvn -Dmaven.test.failure.ignore clean package
 
-   stage('Build') {
-      // Run the maven build
-      withEnv(["MVN_HOME=$mvnHome"]) {
-         if (isUnix()) {
-            sh "cd $PATH_REPO/$SERVICE_NAME && $MVN_HOME/bin/mvn -Dmaven.test.failure.ignore clean package"
-         } else {
-            bat(/"%MVN_HOME%\bin\mvn" -Dmaven.test.failure.ignore clean package/)
-         }
-      }
-   }
+cat <<EOF > Dockerfile_slim_image
+FROM openjdk:8-jdk-alpine
+EXPOSE $PORT_SERVICE
+COPY target/config-server-*-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+EOF
+
+docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:8-jdk-alpine_3 -t $SERVICE_NAME:latest .
+
+                        """
+                    }
+                }}
+   
 }
