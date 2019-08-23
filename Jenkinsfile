@@ -1,19 +1,13 @@
-pipeline {
-    agent any
-    environment { 
-        SERVICE_NAME = 'api-gateway'
-        PATH_REPO = '/opt/BWRK'
-    }
-    stages {
-        stage("fetch svn") {
-            steps {
-                parallel (
-                    "$SERVICE_NAME" : {
-                        sh "echo fetch $SERVICE_NAME"
-                        sh "cd $PATH_REPO && git fetch ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git"
-                        sh "echo 'Git fetch done' > /tmp/j.log" 
-                    })
-                }
-            }
-        }
-    }  
+#!/usr/bin/env groovy
+// Some fast steps to inspect the build server. Create a pipeline script job and add this:
+
+node {
+   DOCKER_PATH = sh (script: 'command -v docker', returnStdout: true).trim()
+   echo "Docker path: ${DOCKER_PATH}"
+   
+   FREE_MEM = sh (script: 'free -m', returnStdout: true).trim()
+   echo "Free memory: ${FREE_MEM}"
+   
+   echo sh(script: 'env|sort', returnStdout: true)
+
+}
