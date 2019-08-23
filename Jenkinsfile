@@ -10,14 +10,14 @@ node {
    
    echo sh(script: 'env|sort', returnStdout: true)
    
-   SERVICE_NAME = 'config-server'
+   SERVICE_NAME = "config-server"
    echo "SERVICE_NAME = $SERVICE_NAME"
    PATH_REPO = '/opt/BWRK'
    echo "PATH_REPO = $PATH_REPO"
    mvnHome = '/opt/apache-maven-3.6.1'
    echo "mvnHome = $mvnHome"
    
-   git 'ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git'
+   git "ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git"
    
    stage('Build') {
       // Run the maven build
