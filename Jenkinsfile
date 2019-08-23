@@ -19,9 +19,10 @@ pipeline {
         
     }
 
-    sh 'git fetch ssh://git@bitbucket.org/blockwrk/config-server.git'
-
     stages {
+        stage('Preparation') { // for display purposes
+           git 'ssh://git@bitbucket.org/blockwrk/api-gateway.git'
+               }
 
         stage('Build') {
             agent {
