@@ -3,10 +3,24 @@ pipeline {
   agent any
 
   stages {
+   stage ('Extract') {
+    parallel 'Extract':{
+      dir('project1') {
+        git url: 'ssh://git@bitbucket.org/blockwrk/config-server.git'
+      }
+      dir('project2') {
+        git url: 'ssh://git@bitbucket.org/blockwrk/opencart.git'
+      }
+      dir('project3') {
+        git url: 'ssh://git@bitbucket.org/blockwrk/shimmer-service.git'
+      }
+    }   
+  }
+    
     stage("Build") {
       steps {
         sh 'echo test123'
-        sh 'git fetch ssh://git@bitbucket.org/blockwrk/config-server.git'
+        sh 'git fetch 
         sh 'mvn -v'
       }
     }
