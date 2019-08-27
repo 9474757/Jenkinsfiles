@@ -3,19 +3,20 @@ pipeline {
   agent any
 
   stages {
-   stage ('Extract') {
-    parallel 'Extract':{
-      dir('project1') {
-        git url: 'ssh://git@bitbucket.org/blockwrk/config-server.git'
-      }
-      dir('project2') {
-        git url: 'ssh://git@bitbucket.org/blockwrk/opencart.git'
-      }
-      dir('project3') {
-        git url: 'ssh://git@bitbucket.org/blockwrk/shimmer-service.git'
-      }
-    }   
-  }
+stage("Parallel") {
+    steps {
+        parallel (
+            "firstTask" : {
+                //config-server
+                  git url: 'ssh://git@bitbucket.org/blockwrk/config-server.git'
+            },
+            "secondTask" : {
+                //token-service
+                git url: 'ssh://git@bitbucket.org/blockwrk/token-service.git'
+            }
+        )
+    }
+}
     
     stage("Build") {
       steps {
