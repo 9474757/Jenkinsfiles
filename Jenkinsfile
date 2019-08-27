@@ -5,6 +5,8 @@ pipeline {
   stages {
     stage("Build") {
       steps {
+        sh 'echo test123'
+        sh 'git fetch ssh://git@bitbucket.org/blockwrk/config-server.git'
         sh 'mvn -v'
       }
     }
