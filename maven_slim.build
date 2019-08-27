@@ -10,4 +10,3 @@ COPY target/config-server-*-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 EOF
 
-docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:8-jdk-alpine_3 -t $SERVICE_NAME:latest .
