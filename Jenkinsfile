@@ -20,7 +20,6 @@ pipeline {
     stage("Build") {
       steps {
         sh 'echo test123'
-        sh 'git fetch 
         sh 'mvn -v'
       }
     }
