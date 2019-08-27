@@ -1,7 +1,8 @@
 SERVICE_NAME=$(pwd | grep -o '[^/]*$')
 PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
 rm -R ./target
-mvn -Dmaven.test.failure.ignore clean package
+rm -R build
+gradle build -x test
 
 cat <<EOF > Dockerfile_slim_image
 FROM openjdk:8-jdk-alpine
