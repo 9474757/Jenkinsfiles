@@ -20,8 +20,8 @@ docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:$VR_JAR -t $SERVICE_NAM
 
 #####
 
-docker tag $SERVICE_NAME:latest $BWRK_URL_ECR:$SERVICE_NAME-$VR_JAR
-docker tag $SERVICE_NAME:latest $BWRK_URL_ECR:$SERVICE_NAME-latest
+docker tag $SERVICE_NAME:latest $PROJ_URL_ECR:$SERVICE_NAME-$VR_JAR
+docker tag $SERVICE_NAME:latest $PROJ_URL_ECR:$SERVICE_NAME-latest
 AWS_TOKEN=$(aws ecr get-login | awk '{print $6}')
-docker login -u AWS -p $AWS_TOKEN https://$BWRK_URL_ECR
-docker push $BWRK_URL_ECR:$SERVICE_NAME-latest
+docker login -u AWS -p $AWS_TOKEN https://$PROJ_URL_ECR
+docker push $PROJ_URL_ECR:$SERVICE_NAME-latest
