@@ -3,7 +3,7 @@
 echo "whoami"
 whoami
 cd $LOCAL_REPO/$SERVICE_NAME
-git fetch ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git
+git fetch ssh://git@bitbucket.org/$PROJ_NAME/$SERVICE_NAME.git
 VR_JAR=$(cat ./build.gradle | grep SNAPSHOT | sed $1 's/version = \x27//g' | sed $1 's/-SNAPSHOT\x27//g')
 PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
 rm -R build
