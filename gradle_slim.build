@@ -1,5 +1,6 @@
 #!/bin/sh
 
+whoami
 cd $LOCAL_REPO/$SERVICE_NAME
 git fetch ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git
 VR_JAR=$(cat ./build.gradle | grep SNAPSHOT | sed $1 's/version = \x27//g' | sed $1 's/-SNAPSHOT\x27//g')
