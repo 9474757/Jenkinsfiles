@@ -1,14 +1,24 @@
-SERVICE_NAME=$(pwd | grep -o '[^/]*$')
+
+cd $LOCAL_REPO/$SERVICE_NAME
+git fetch ssh://git@bitbucket.org/blockwrk/$SERVICE_NAME.git
+VR_JAR=$(cat ./build.gradle | grep SNAPSHOT | sed $1 's/version = \x27//g' | sed $1 's/-SNAPSHOT\x27//g')
 PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
-rm -R ./target
 rm -R build
 gradle build -x test
 
 cat <<EOF > Dockerfile_slim_image
 FROM openjdk:8-jdk-alpine
 EXPOSE $PORT_SERVICE
-COPY target/*-SNAPSHOT.jar app.jar
+COPY build/libs/*-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 EOF
 
-sudo docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:8-jdk-alpine_3 -t $SERVICE_NAME:latest .
+docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:$VR_JAR -t $SERVICE_NAME:latest .
+
+#####
+
+docker tag $SERVICE_NAME:latest $BWRK_URL_ECR:$SERVICE_NAME-$VR_JAR
+docker tag $SERVICE_NAME:latest $BWRK_URL_ECR:$SERVICE_NAME-latest
+AWS_TOKEN=$(aws ecr get-login | awk '{print $6}')
+docker login -u AWS -p $AWS_TOKEN https://$BWRK_URL_ECR
+docker push $BWRK_URL_ECR:$SERVICE_NAME-latest
