@@ -1,0 +1,42 @@
+cd /opt/$PROJ_NAME/$SERVICE_NAME
+
+if [ -d "$SERVICE_NAME" ]; then cd $SERVICE_NAME && git fetch . ;
+else git clone ssh://git@bitbucket.org/$PROJ_NAME/$SERVICE_NAME.git; fi
+
+PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
+rm ./app.jar
+
+################################################## BUILD JAR
+
+if [ -f "build.gradle" ]; then 
+VR_JAR=$(cat ./build.gradle | grep SNAPSHOT | sed $1 's/version = \x27//g' | sed $1 's/-SNAPSHOT\x27//g') && 
+rm -R build
+gradle build -x test;
+else 
+VR_JAR=$(cat ./pom.xml | grep SNAPSHOT | sed $1 's/<version>//g' | sed $1 's/-SNAPSHOT<\/version>//g')
+rm -R target
+mvn -Dmaven.test.failure.ignore clean package ; fi
+
+################################################## BUILD DOCKER IMAGE
+
+if [ -f "build.gradle" ]; then mv build/libs/*-SNAPSHOT.jar ./app.jar ;
+else mv target/*-SNAPSHOT.jar ./app.jar; fi
+
+cat <<EOF > Dockerfile_slim_image
+FROM openjdk:8-jdk-alpine
+EXPOSE $PORT_SERVICE
+COPY app.jar app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+EOF
+
+docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:$VR_JAR -t $SERVICE_NAME:latest .
+rm ./Dockerfile_slim_image
+
+################################################## PUSH TO AWS ECR 
+
+docker tag $SERVICE_NAME:latest $PROJ_URL_ECR:$SERVICE_NAME-$VR_JAR
+docker tag $SERVICE_NAME:latest $PROJ_URL_ECR:$SERVICE_NAME-latest
+AWS_TOKEN=$(aws ecr get-login | awk '{print $6}')
+docker login -u AWS -p $AWS_TOKEN https://$PROJ_URL_ECR
+docker push $PROJ_URL_ECR:$SERVICE_NAME-latest
+
