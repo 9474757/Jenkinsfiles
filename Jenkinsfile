@@ -8,11 +8,11 @@ stage("Parallel") {
         parallel (
             "firstTask" : {
                 //config-server
-                  git url: 'ssh://git@bitbucket.org/blockwrk/config-server.git'
+                  git url: 'ssh://git@bitbucket.org/$PROJ_NAME/$SERVICE_NAME.git'
             },
             "secondTask" : {
                 //token-service
-                git url: 'ssh://git@bitbucket.org/blockwrk/token-service.git'
+                git url: 'ssh://git@bitbucket.org/$PROJ_NAME/$SERVICE_NAME.git'
             }
         )
     }
