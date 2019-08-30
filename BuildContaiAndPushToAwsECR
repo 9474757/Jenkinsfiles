@@ -30,7 +30,7 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 EOF
 
 docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:$VR_JAR -t $SERVICE_NAME:latest .
-rm ./Dockerfile_slim_image
+#rm ./Dockerfile_slim_image
 
 ################################################## PUSH TO AWS ECR 
 
