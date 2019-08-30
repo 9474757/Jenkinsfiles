@@ -27,13 +27,12 @@ COPY app.jar app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 EOF
 
-docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:$VR_JAR -t $SERVICE_NAME:latest .
-#rm ./Dockerfile_slim_image
+docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:$VR_JAR .
+rm ./Dockerfile_slim_image
 
 ################################################## PUSH TO AWS ECR 
 
-docker tag $SERVICE_NAME:latest $PROJ_URL_ECR:$SERVICE_NAME-$VR_JAR
-docker tag $SERVICE_NAME:latest $PROJ_URL_ECR:$SERVICE_NAME-latest
+docker tag $SERVICE_NAME:$VR_JAR $PROJ_URL_ECR:$SERVICE_NAME-latest
 AWS_TOKEN=$(aws ecr get-login | awk '{print $6}')
 docker login -u AWS -p $AWS_TOKEN https://$PROJ_URL_ECR
 docker push $PROJ_URL_ECR:$SERVICE_NAME-latest
