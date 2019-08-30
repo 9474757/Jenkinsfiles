@@ -1,7 +1,7 @@
-cd /opt/$PROJ_NAME/$SERVICE_NAME
+cd /opt/$PROJ_NAME
 
-if [ -d "$SERVICE_NAME" ]; then cd $SERVICE_NAME && git fetch . ;
-else git clone ssh://git@bitbucket.org/$PROJ_NAME/$SERVICE_NAME.git; fi
+if [ -d "$SERVICE_NAME" ]; then cd ./$SERVICE_NAME && git fetch . ;
+else git clone ssh://git@bitbucket.org/$PROJ_NAME/$SERVICE_NAME.git && cd ./$SERVICE_NAME; fi
 
 PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
 rm ./app.jar
