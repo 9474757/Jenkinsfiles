@@ -11,7 +11,7 @@ VR_JAR=$(cat ./build.gradle | grep SNAPSHOT | sed $1 's/version = \x27//g' | sed
 rm -R build
 gradle build -x test;
 else 
-VR_JAR=$(cat ./pom.xml | grep SNAPSHOT | sed $1 's/<version>//g' | sed $1 's/-SNAPSHOT<\/version>//g')
+VR_JAR=$(cat ./pom.xml | grep SNAPSHOT | sed $1 's/    <version>//g' | sed $1 's/-SNAPSHOT<\/version>//g')
 rm -R target
 mvn -Dmaven.test.failure.ignore clean package ; fi
 
