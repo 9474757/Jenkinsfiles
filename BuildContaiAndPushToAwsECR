@@ -2,17 +2,17 @@ cd /opt/$PROJ_NAME/$SERVICE_NAME
 git fetch .
 SERVICE_NAME=$(pwd | grep -o '[^/]*$')
 PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
-rm ./app.jar
+if [ -f "app.jar" ]; then rm app.jar; fi;
 
 ################################################## BUILD JAR
 
 if [ -f "build.gradle" ]; then 
 VR_JAR=$(cat ./build.gradle | grep SNAPSHOT | sed $1 's/version = \x27//g' | sed $1 's/-SNAPSHOT\x27//g') && 
-rm -R build
+if [ -d "build" ]; then rm -R build; fi;
 gradle build -x test;
 else 
 VR_JAR=$(cat ./pom.xml | grep SNAPSHOT | sed $1 's/    <version>//g' | sed $1 's/-SNAPSHOT<\/version>//g')
-rm -R target
+if [ -d "target" ]; then rm -R target; fi;
 mvn -Dmaven.test.failure.ignore clean package ; fi
 
 ################################################## BUILD DOCKER IMAGE
@@ -28,7 +28,7 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 EOF
 
 docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:$VR_JAR .
-rm ./Dockerfile_slim_image
+if [ -f "Dockerfile_slim_image" ]; then rm Dockerfile_slim_image; fi;
 
 ################################################## PUSH TO AWS ECR 
 
