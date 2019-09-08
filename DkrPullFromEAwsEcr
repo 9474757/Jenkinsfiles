@@ -1,4 +1,4 @@
-cd /opt/blockwrk/$SERVICE_NAME
+cd /opt/$PROJ_NAME/$SERVICE_NAME
 PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
 
 ################################################## SET VERSION JAR
