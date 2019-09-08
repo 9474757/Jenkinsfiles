@@ -1,0 +1,14 @@
+cd /opt/$PROJ_NAME/$SERVICE_NAME
+SERVICE_NAME=$(pwd | grep -o '[^/]*$')
+PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
+
+################################################## SET VERSION JAR
+#if [ -f "build.gradle" ]; then 
+#VR_JAR=$(cat ./build.gradle | grep SNAPSHOT | sed $1 's/version = \x27//g' | sed $1 's/-SNAPSHOT\x27//g') 
+#else 
+#VR_JAR=$(cat ./pom.xml | grep SNAPSHOT | sed $1 's/    <version>//g' | sed $1 's/-SNAPSHOT<\/version>//g'); fi
+
+################################################## PUSH TO AWS ECR 
+AWS_TOKEN=$(aws ecr get-login | awk '{print $6}')
+docker login -u AWS -p $AWS_TOKEN https://$PROJ_URL_ECR
+docker push $PROJ_URL_ECR:$SERVICE_NAME-latest
