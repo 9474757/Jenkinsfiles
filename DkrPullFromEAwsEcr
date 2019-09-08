@@ -9,7 +9,7 @@ PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
 #else 
 #VR_JAR=$(cat ./pom.xml | grep SNAPSHOT | sed $1 's/    <version>//g' | sed $1 's/-SNAPSHOT<\/version>//g'); fi
 
-################################################## PUSH TO AWS ECR 
+################################################## PULL FROM AWS ECR 
 AWS_TOKEN=$(aws ecr get-login | awk '{print $6}')
 docker login -u AWS -p $AWS_TOKEN https://$PROJ_URL_ECR
 echo $PROJ_URL_ECR:$SERVICE_NAME-latest
