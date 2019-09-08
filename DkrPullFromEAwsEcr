@@ -11,4 +11,5 @@ PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
 ################################################## PUSH TO AWS ECR 
 AWS_TOKEN=$(aws ecr get-login | awk '{print $6}')
 docker login -u AWS -p $AWS_TOKEN https://$PROJ_URL_ECR
+echo $PROJ_URL_ECR:$SERVICE_NAME-latest
 docker push $PROJ_URL_ECR:$SERVICE_NAME-latest
