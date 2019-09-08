@@ -1,3 +1,4 @@
+whoami
 cd /opt/blockwrk/$SERVICE_NAME
 SERVICE_NAME=$(pwd | grep -o '[^/]*$')
 PORT_SERVICE=$(cat ./Dockerfile | grep EXPOSE | grep -o '[^EXPOSE ]*$')
