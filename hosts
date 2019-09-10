@@ -1,0 +1,10 @@
+[k8s-master]
+master ssh_port=22 ansible_host=localhost ansible_user=root ansible_python_interpreter=/usr/bin/python3
+
+[k8s-workers]
+worker1 ssh_port=22 ansible_host=10.10.8.122 ansible_user=root ansible_python_interpreter=/usr/bin/python3
+worker2 ssh_port=22 ansible_host=10.10.8.123 ansible_user=root ansible_python_interpreter=/usr/bin/python3
+
+[k8s-workers:vars]
+K8S_MASTER_NODE_IP=localhost
+K8S_API_SERCURE_PORT=6443
