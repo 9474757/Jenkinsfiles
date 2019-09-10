@@ -1,0 +1,4 @@
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 >> /home/ubuntu/cluster_initialized.txt
+sudo cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml >> /home/ubuntu/pod_network_setup.txt
+sudo kubeadm token create --print-join-command >> /home/ubuntu/K8S_ADD_NEW_NODE
