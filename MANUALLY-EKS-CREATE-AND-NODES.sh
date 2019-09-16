@@ -1,5 +1,5 @@
 eksctl create cluster \
---name BWRK-TEST-BY-MAN \
+--name EKS-TEST-BY-MAN \
 --version 1.14 \
 --nodegroup-name standard-workers \
 --node-type t2.micro \
