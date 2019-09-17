@@ -1,0 +1,24 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: EKS-1
+  region: us-east-2
+
+nodeGroups:
+  - name: NG1-PUB
+    instanceType: t2.micro
+    minSize: 2
+    maxSize: 2
+    volumeSize: 8
+    volumeType: gp2
+    ami: ami-0f841722be384ed96
+    amiFamily: AmazonLinux2
+    labels:
+      nodegroup-type: EKS-NODES
+    ssh: # use existing EC2 key
+      publicKeyName: anton.m
+    iam:
+      withAddonPolicies:
+        autoScaler: true
