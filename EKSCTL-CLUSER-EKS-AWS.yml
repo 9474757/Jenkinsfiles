@@ -1,0 +1,37 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: EKS-TEST-1
+  region: us-east-2
+
+nodeGroups:
+  - name: ng1-public
+    instanceType: t2.micro
+    minSize: 2
+    maxSize: 2
+    volumeSize: 8
+    volumeType: gp2
+    ami: ami-0f841722be384ed96
+    amiFamily: AmazonLinux2
+    labels:
+      nodegroup-type: frontend-workloads
+    ssh: # import inline public key
+      publicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1y46mFdIRXHDK0aOdFB5HDJIgQbMeDeMNTD6KvjrEIuhlKIgExX7b0yzGE7gGLNxx+8mJ2Vkexd33W4WMD//37mOjddVGljqFcDS+HHX4/FMXg08$
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+
+cloudWatch:
+  clusterLogging:
+    # enable specific types of cluster control plane logs
+    enableTypes: ["audit", "authenticator", "controllerManager"]
+    # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
+    # supported special values: "*" and "all"
+
+### eksctl create cluster -f 1-CLUSER-EKS-AWS.yml
+### eksctl update cluster -f 1-CLUSER-EKS-AWS.yml
+### eksctl delete cluster --name EKS-TEST-BY-MAN
+### https://eksctl.io/usage/creating-and-managing-clusters/
+### 
