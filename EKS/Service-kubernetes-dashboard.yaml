@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-dashboard
+  labels:
+    run: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  type: LoadBalancer
+# uncomment if you want to restrict the access to allowed IP's
+  loadBalancerSourceRanges:
+  - 91.222.250.74/32
+  ports:
+  - port: 443
+    targetPort: 8443
+    protocol: TCP
+  selector:
+    k8s-app: kubernetes-dashboard  
