@@ -4,4 +4,4 @@ kubectl create serviceaccount tiller-def
 kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=default:tiller-def
 helm init --service-account tiller-def
 helm init --service-account tiller-def --tiller-image gcr.io/kubernetes-helm/tiller:latest
-helm init --tiller-namespace default --tiller-service-account tiller-def
+helm init --tiller-namespace default --service-account tiller-def
