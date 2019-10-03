@@ -1,3 +1,5 @@
+#!bin/sh
+
 kubectl --namespace kube-system delete serviceaccount tiller
 kubectl --namespace kube-system create serviceaccount tiller
 kubectl delete clusterrolebinding tiller-cluster-rule
