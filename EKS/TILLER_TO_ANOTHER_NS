@@ -5,4 +5,4 @@ kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceac
 helm init --service-account tiller-def
 helm init --service-account tiller-def --tiller-image gcr.io/kubernetes-helm/tiller:latest
 helm init --tiller-namespace default --service-account consul
-helm install --name consul ./consul-helm --tiller-namespace default --service-account consul
+
