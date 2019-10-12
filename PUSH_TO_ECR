@@ -1,0 +1,5 @@
+docker tag $SERVICE_NAME:$VR_JAR $PROJ_URL_ECR:$SERVICE_NAME-latest
+AWS_TOKEN=$(aws ecr get-login | awk '{print $6}')
+docker login -u AWS -p $AWS_TOKEN https://$PROJ_URL_ECR
+aws ecr batch-delete-image --repository-name automation --image-ids imageTag=$SERVICE_NAME-latest
+docker push $PROJ_URL_ECR:$SERVICE_NAME-latest
