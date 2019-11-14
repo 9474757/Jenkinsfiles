@@ -27,10 +27,10 @@ EXPOSE 3000
 CMD [ "npm", "run", "start" ]
 EOF
 
-docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:-latest .
+docker build -f ./Dockerfile_slim_image -t $SERVICE_NAME:latest .
 if [ -f "Dockerfile_slim_image" ]; then rm Dockerfile_slim_image; fi;
 
-docker tag $SERVICE_NAME:-latest $PROJ_URL_ECR:$SERVICE_NAME-latest
+docker tag $SERVICE_NAME:latest $PROJ_URL_ECR:$SERVICE_NAME-latest
 AWS_TOKEN=$(aws ecr get-login | awk '{print $6}')
 docker login -u AWS -p $AWS_TOKEN https://$PROJ_URL_ECR
 aws ecr batch-delete-image --repository-name automation --image-ids imageTag=$SERVICE_NAME-latest
